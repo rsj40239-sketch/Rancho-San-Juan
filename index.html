@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Rancho San Juan</title>
+    <!-- Tailwind CSS para el diseño base ágil y responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons para iconos limpios y modernos -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+        :root {
+            --primary: #8B2635;      /* Terracota premium */
+            --primary-dark: #6e1d29;
+            --secondary: #1b5e20;    /* Verde bosque sutil */
+            --accent: #d4af37;       /* Dorado elegante */
+            --neutral-dark: #2c3e50; /* Texto principal */
+            --neutral-light: #f8f9fa;/* Fondos limpios */
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--neutral-light);
+            color: var(--neutral-dark);
+        }
+
+        h1, h2, h3, .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .bg-terracotta { background-color: var(--primary); }
+        .text-terracotta { color: var(--primary); }
+        .border-terracotta { border-color: var(--primary); }
+        .hover-bg-terracotta:hover { background-color: var(--primary-dark); }
+
+        .bg-forest { background-color: var(--secondary); }
+        .text-forest { color: var(--secondary); }
+
+        /* Estrellas interactivas en tarjetas */
+        .interactive-stars span {
+            transition: transform 0.15s, color 0.15s;
+        }
+        .interactive-stars span:hover {
+            transform: scale(1.25);
+        }
+
+        /* Lightbox del mapa */
+        #map-lightbox {
+            transition: opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- HERO HEADER CON LA IMAGEN DE ENTRADA (RSJ.png) -->
+    <header class="relative w-full h-[320px] md:h-[420px] lg:h-[480px] overflow-hidden shadow-2xl">
+        <img 
+            src="RSJ.png" 
+            alt="Entrada Rancho San Juan" 
+            class="w-full h-full object-cover transform scale-105 hover:scale-100 transition-transform duration-1000 ease-out"
+            onerror="this.src='https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=1600'; console.log('Usando imagen de respaldo para el header');"
+        >
+        <!-- Overlay oscuro para mejorar la legibilidad del título -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 w-full p-6 md:p-12 text-white flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div>
+                <span class="text-xs md:text-sm uppercase tracking-[0.3em] text-[#d4af37] font-semibold mb-2 block">Exclusividad y Armonía</span>
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">RANCHO SAN JUAN</h1>
+                <p class="text-sm md:text-lg text-gray-200 mt-2 font-light max-w-xl">Portal vecinal exclusivo para avisos, comercios internos y servicios del condominio.</p>
+            </div>
+            <a href="#mapa-section" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-5 py-3 rounded-full font-medium transition-all text-sm group self-start md:self-end">
+                <i data-lucide="map" class="w-4 h-4 text-[#d4af37] group-hover:rotate-12 transition-transform"></i>
+                Ver Mapa del Condominio
+            </a>
+        </div>
+    </header>
+
+    <!-- NAVEGACIÓN Y FILTROS -->
+    <nav class="sticky top-0 z-40 bg-white border-b border-gray-200/80 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 md:px-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 py-4">
+                <!-- Filtros dinámicos de Apartados (Se renderizan mediante JS) -->
+                <div class="flex flex-wrap items-center gap-2" id="filter-buttons">
+                    <!-- Se inyecta dinámicamente -->
+                </div>
+                
+                <!-- Acciones directas (Redirige al panel administrador) -->
+                <div class="flex items-center gap-3">
+                    <a href="#admin-section" class="inline-flex items-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded-full text-xs md:text-sm font-semibold hover:bg-black transition-colors shadow-sm">
+                        <i data-lucide="lock" class="w-4 h-4 text-[#d4af37]"></i> Panel Publicador
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 md:px-8 py-8">
+
+        <!-- SECCIÓN DE BIENVENIDA -->
+        <section class="mb-12 bg-white rounded-2xl border border-gray-100 p-6 md:p-8 shadow-sm">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4 font-serif border-b border-slate-100 pb-4">¡Te damos la bienvenida a nuestro espacio comunitario!</h2>
+            <p class="text-base text-gray-600 mb-6 leading-relaxed">
+                Esta plataforma fue diseñada exclusivamente para conectar y facilitar la vida dentro de nuestro fraccionamiento. Aquí podrás:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <!-- Pilar 1 -->
+                <div class="p-5 rounded-xl bg-slate-50 border border-slate-100/80 flex gap-4">
+                    <div class="text-emerald-700 mt-1 flex-shrink-0">
+                        <i data-lucide="store" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wider">Ubicar negocios locales</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Encuentra comercios cercanos, consulta sus horarios de atención y localízalos fácilmente en nuestro mapa interactivo por manzanas.</p>
+                    </div>
+                </div>
+                <!-- Pilar 2 -->
+                <div class="p-5 rounded-xl bg-slate-50 border border-slate-100/80 flex gap-4">
+                    <div class="text-[#8B2635] mt-1 flex-shrink-0">
+                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wider">Explorar productos y servicios</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Descubre una amplia variedad de artículos en venta y servicios de todo tipo, respaldados por las reseñas y calificaciones de tus propios vecinos.</p>
+                    </div>
+                </div>
+                <!-- Pilar 3 -->
+                <div class="p-5 rounded-xl bg-slate-50 border border-slate-100/80 flex gap-4">
+                    <div class="text-amber-600 mt-1 flex-shrink-0">
+                        <i data-lucide="bell" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wider">Mantenerte informado</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Accede a la sección de avisos útiles y comunicados importantes para la comunidad.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Anuncio de WhatsApp Integrado -->
+            <div class="mt-6 p-5 bg-emerald-50/70 border border-emerald-100 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-4 text-center md:text-left flex-col md:flex-row">
+                    <div class="w-12 h-12 bg-emerald-500 text-white rounded-full flex items-center justify-center shadow-sm flex-shrink-0">
+                        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.413 9.863-9.83 0-2.628-1.02-5.1-2.871-6.958C16.612 1.963 14.14 1.94 12.01 1.94c-5.438 0-9.863 4.414-9.866 9.831-.001 1.714.453 3.39 1.317 4.877L2.43 21.57l5.03-1.317z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-serif font-bold text-slate-800 text-base">¿Quieres publicar tu propio anuncio?</h4>
+                        <p class="text-xs text-slate-600 mt-0.5">Si te quieres anunciar manda mensaje por WhatsApp para darte de alta inmediatamente.</p>
+                    </div>
+                </div>
+                <a href="https://wa.me/525658362644?text=Hola,%20me%20gustaría%20anunciarme%20en%20el%20Portal%20Rancho%20San%20Juan" target="_blank" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-full text-xs md:text-sm font-bold transition-all shadow-md group hover:scale-[1.02]">
+                    Mandar WhatsApp: 56 5836 2644
+                </a>
+            </div>
+
+            <p class="text-sm font-bold text-center text-emerald-800 bg-emerald-50/20 py-3.5 rounded-xl border border-emerald-100/40 tracking-wide mt-4">
+                🌱 ¡Hagamos crecer nuestra comunidad apoyando lo local!
+            </p>
+        </section>
+
+        <!-- SECCIÓN DE MAPA INTERACTIVO (mapa.png) -->
+        <section id="mapa-section" class="mb-12 bg-white rounded-2xl border border-gray-100 p-6 md:p-8 shadow-sm">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <span class="text-xs uppercase tracking-wider text-emerald-700 font-semibold mb-1 block">Zonificación Interna</span>
+                    <h2 class="text-3xl font-bold text-gray-900">Mapa del Fraccionamiento</h2>
+                    <p class="text-sm text-gray-500 mt-1">Ubicación exacta de manzanas, vialidades y áreas de reserva.</p>
+                </div>
+                <button onclick="openMapLightbox()" class="inline-flex items-center gap-2 text-sm text-emerald-800 font-semibold hover:text-emerald-950 transition-colors bg-emerald-50 px-4 py-2 rounded-lg border border-emerald-100">
+                    <i data-lucide="maximize-2" class="w-4 h-4"></i> Ver en pantalla completa
+                </button>
+            </div>
+            
+            <div class="relative w-full h-[250px] md:h-[450px] overflow-hidden rounded-xl border border-gray-200 group cursor-pointer" onclick="openMapLightbox()">
+                <img 
+                    src="mapa.png" 
+                    alt="Mapa de Rancho San Juan" 
+                    class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                    onerror="this.src='https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=1600'; console.log('Usando imagen de respaldo para el mapa');"
+                >
+                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                    <span class="bg-white/95 text-gray-800 px-4 py-2 rounded-full text-xs font-semibold shadow-md inline-flex items-center gap-2 transform translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                        <i data-lucide="zoom-in" class="w-3.5 h-3.5 text-emerald-800"></i> Ampliar distribución
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE PRESENTACIÓN DINÁMICA DEL APARTADO SELECCIONADO -->
+        <section id="apartado-presentacion" class="mb-10 transition-all duration-300">
+            <!-- El contenido dinámico de la presentación se inyectará aquí con JavaScript -->
+        </section>
+
+        <!-- GRID DE PUBLICACIONES -->
+        <section class="mb-16">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900" id="section-title-text">Publicaciones de la Comunidad</h2>
+                    <p class="text-sm text-gray-500 mt-1" id="section-subtitle-text">Mostrando todos los anuncios recientes.</p>
+                </div>
+            </div>
+
+            <!-- Contenedor del Feed -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="posts-feed">
+                <!-- Se inyectan con javascript -->
+            </div>
+        </section>
+
+        <!-- SECCIÓN EXCLUSIVA DE ADMINISTRACIÓN (Formulario con bloqueo por contraseña) -->
+        <section id="admin-section" class="bg-white rounded-2xl border border-gray-200 p-1 md:p-1 overflow-hidden shadow-lg max-w-3xl mx-auto transition-all duration-500">
+            
+            <!-- VISTA 1: PANTALLA DE BLOQUEO DE SEGURIDAD (Se muestra si no está autenticado) -->
+            <div id="admin-auth-container" class="py-12 px-6 md:px-12 text-center flex flex-col items-center justify-center bg-gradient-to-b from-slate-50 to-white">
+                <div class="w-16 h-16 bg-red-50 text-terracotta rounded-full flex items-center justify-center mb-4 shadow-sm border border-red-100">
+                    <i data-lucide="shield-alert" class="w-8 h-8"></i>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2">Acceso Exclusivo de Administración</h2>
+                <p class="text-xs md:text-sm text-slate-500 max-w-md mx-auto mb-8">
+                    Esta sección está restringida. Ingrese la clave de seguridad autorizada para publicar anuncios, quitar publicaciones expiradas o configurar nuevos apartados de Rancho San Juan.
+                </p>
+                
+                <form id="admin-login-form" class="w-full max-w-sm space-y-4">
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                            <i data-lucide="key-round" class="w-4 h-4"></i>
+                        </span>
+                        <input 
+                            type="password" 
+                            id="admin-password" 
+                            required 
+                            placeholder="Ingrese contraseña de administrador" 
+                            class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-center text-sm focus:outline-none focus:ring-2 focus:ring-[#8B2635]/20 focus:border-[#8B2635] transition-all"
+                        >
+                    </div>
+                    <button 
+                        type="submit" 
+                        class="w-full bg-slate-900 hover:bg-black text-white py-3.5 rounded-xl font-bold text-xs md:text-sm uppercase tracking-wider transition-all shadow-md inline-flex items-center justify-center gap-2"
+                    >
+                        <i data-lucide="unlock" class="w-4 h-4 text-[#d4af37]"></i> Desbloquear Panel
+                    </button>
+                    <p class="text-[10px] text-slate-400 mt-2">Clave de demostración: <span class="font-mono bg-slate-100 px-1.5 py-0.5 rounded">SanJuan2026</span></p>
+                </form>
+            </div>
+
+            <!-- VISTA 2: FORMULARIO DE EDICIÓN / PUBLICACIÓN DESBLOQUEADO (Oculto inicialmente) -->
+            <div id="admin-form-container" class="hidden p-6 md:p-10">
+                <!-- Cabecera del Panel Desbloqueado -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-gray-100 pb-6 mb-8">
+                    <div>
+                        <span class="text-xs uppercase tracking-widest text-[#8B2635] font-bold inline-flex items-center gap-1.5 bg-red-50 text-terracotta px-2.5 py-1 rounded-full">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Sesión de Administrador Activa
+                        </span>
+                        <h2 class="text-2xl font-bold text-gray-900 mt-2">Panel de Control Ejecutivo</h2>
+                        <p class="text-xs text-gray-500">Gestione publicaciones, elimine contenido obsoleto y configure nuevos apartados del fraccionamiento.</p>
+                    </div>
+                    <button 
+                        onclick="logoutAdmin()" 
+                        class="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-700 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all border border-slate-200"
+                    >
+                        <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Cerrar Sesión
+                    </button>
+                </div>
+
+                <!-- TABS DE ADMINISTRADOR: PUBLICACIONES VS APARTADOS -->
+                <div class="flex border-b border-gray-200 mb-8 gap-4">
+                    <button id="tab-btn-posts" onclick="switchAdminTab('posts')" class="pb-3 text-sm font-bold border-b-2 border-slate-900 text-slate-900 px-1 transition-all">
+                        <i data-lucide="send" class="w-4 h-4 inline-block mr-1.5 -mt-1"></i> Publicar y Quitar Anuncios
+                    </button>
+                    <button id="tab-btn-categories" onclick="switchAdminTab('categories')" class="pb-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-slate-900 px-1 transition-all">
+                        <i data-lucide="folder-plus" class="w-4 h-4 inline-block mr-1.5 -mt-1"></i> Gestionar Apartados
+                    </button>
+                </div>
+
+                <!-- SUB-SECCIÓN 1: CREAR Y QUITAR PUBLICACIÓN -->
+                <div id="admin-sub-posts" class="space-y-6">
+                    <form id="add-post-form" class="space-y-6 bg-slate-50 p-6 rounded-xl border border-slate-100">
+                        <h3 class="font-serif text-lg font-bold text-slate-800 border-b border-slate-200/60 pb-2">Crear Nuevo Anuncio</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2" for="post-title">Título del Anuncio</label>
+                                <input 
+                                    type="text" 
+                                    id="post-title" 
+                                    required 
+                                    placeholder="Ej. Clases de tenis los fines de semana" 
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-200 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#8B2635]/20 focus:border-[#8B2635] transition-all text-sm bg-white"
+                                >
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2" for="post-category">Apartado / Categoría</label>
+                                <select 
+                                    id="post-category" 
+                                    required 
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8B2635]/20 focus:border-[#8B2635] transition-all text-sm bg-white"
+                                >
+                                    <!-- Se alimenta dinámicamente -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2" for="post-desc">Detalles del Anuncio</label>
+                            <textarea 
+                                id="post-desc" 
+                                rows="4" 
+                                required 
+                                placeholder="Proporciona una descripción detallada, precios, horarios, teléfonos de contacto o ubicación en el mapa..." 
+                                class="w-full px-4 py-3 rounded-lg border border-gray-200 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#8B2635]/20 focus:border-[#8B2635] transition-all text-sm resize-none bg-white"
+                            ></textarea>
+                        </div>
+
+                        <!-- CARGA DE ARCHIVOS FOTOGRÁFICOS -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Imagen de la Publicación</label>
+                            <div class="flex items-center justify-center w-full">
+                                <label class="flex flex-col w-full h-32 border-2 border-dashed border-gray-200 hover:border-[#8B2635] hover:bg-red-50/10 rounded-lg cursor-pointer transition-colors duration-200 bg-white">
+                                    <div class="flex flex-col items-center justify-center pt-7">
+                                        <i data-lucide="image" class="w-8 h-8 text-gray-400 mb-2"></i>
+                                        <p class="text-xs text-gray-500 font-semibold" id="file-label-text">Haz clic para subir foto del producto/servicio</p>
+                                        <p class="text-[10px] text-gray-400 mt-1">Formatos recomendados: PNG, JPG o JPEG</p>
+                                    </div>
+                                    <input type="file" id="post-image" class="hidden" accept="image/*" onchange="previewImage(event)">
+                                </label>
+                            </div>
+                            <!-- Vista previa de imagen cargada -->
+                            <div id="image-preview-container" class="hidden mt-4 relative w-full h-40 rounded-lg overflow-hidden border border-gray-100">
+                                <img id="image-preview" src="#" alt="Vista previa" class="w-full h-full object-cover">
+                                <button type="button" onclick="cancelImage()" class="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1.5 hover:bg-black/80 transition-colors">
+                                    <i data-lucide="x" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 flex justify-end">
+                            <button 
+                                type="submit" 
+                                class="bg-terracotta hover-bg-terracotta text-white px-8 py-3.5 rounded-full text-sm font-semibold transition-all shadow-md inline-flex items-center gap-2"
+                            >
+                                <i data-lucide="send" class="w-4 h-4"></i> Publicar en Rancho San Juan
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- LISTA PARA BORRAR ANUNCIOS ACTIVOS -->
+                    <div class="space-y-4">
+                        <h3 class="font-serif text-lg font-bold text-slate-800">Administrar Anuncios Activos</h3>
+                        <p class="text-xs text-gray-500">Consulte o elimine publicaciones expiradas o reportadas por colonos en Rancho San Juan.</p>
+                        
+                        <div class="border border-gray-100 rounded-xl overflow-hidden bg-white shadow-sm max-h-[350px] overflow-y-auto" id="admin-posts-list">
+                            <!-- Se renderiza por JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-SECCIÓN 2: GESTIONAR Y QUITAR APARTADOS -->
+                <div id="admin-sub-categories" class="hidden space-y-8">
+                    <form id="add-category-form" class="space-y-6">
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 space-y-6">
+                            <h3 class="font-serif text-lg font-bold text-slate-800">Agregar Nuevo Apartado</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2" for="cat-label">Nombre del Apartado</label>
+                                    <input 
+                                        type="text" 
+                                        id="cat-label" 
+                                        required 
+                                        placeholder="Ej. Eventos, Mascotas, Club" 
+                                        class="w-full px-4 py-3 rounded-lg border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8B2635]/20 focus:border-[#8B2635] text-sm bg-white"
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2" for="cat-emoji">Emoji Identificador</label>
+                                    <input 
+                                        type="text" 
+                                        id="cat-emoji" 
+                                        placeholder="Ej. 🐾, 🎾, 🩺" 
+                                        class="w-full px-4 py-3 rounded-lg border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8B2635]/20 focus:border-[#8B2635] text-sm bg-white text-center"
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2" for="cat-theme">Color de Tema Visual</label>
+                                    <select 
+                                        id="cat-theme" 
+                                        required 
+                                        class="w-full px-4 py-3 rounded-lg border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8B2635]/20 focus:border-[#8B2635] text-sm bg-white"
+                                    >
+                                        <option value="red">Terracota / Rojo</option>
+                                        <option value="emerald">Bosque / Verde</option>
+                                        <option value="blue">Institucional / Azul</option>
+                                        <option value="amber">Dorado / Ámbar</option>
+                                        <option value="purple">Púrpura / Exclusivo</option>
+                                        <option value="teal">Turquesa / Aqua</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2" for="cat-icon">Nombre de Icono Lucide</label>
+                                    <input 
+                                        type="text" 
+                                        id="cat-icon" 
+                                        placeholder="Ej. dog, trophy, heart, shield" 
+                                        class="w-full px-4 py-3 rounded-lg border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8B2635]/20 focus:border-[#8B2635] text-sm bg-white"
+                                    >
+                                    <p class="text-[10px] text-gray-400 mt-1">Inserta cualquier identificador válido de lucide-react (ej. "sparkles", "home", "users").</p>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2" for="cat-desc">Descripción Breve del Apartado</label>
+                                    <input 
+                                        type="text" 
+                                        id="cat-desc" 
+                                        required 
+                                        placeholder="Descripción elegante que se mostrará en la cabecera dinámica de la sección..." 
+                                        class="w-full px-4 py-3 rounded-lg border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#8B2635]/20 focus:border-[#8B2635] text-sm bg-white"
+                                    >
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end pt-2">
+                                <button 
+                                    type="submit" 
+                                    class="bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-3 rounded-full text-xs md:text-sm font-bold transition-all shadow-md inline-flex items-center gap-2"
+                                >
+                                    <i data-lucide="plus" class="w-4 h-4"></i> Registrar Nuevo Apartado
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Lista para borrar apartados creados -->
+                    <div class="space-y-4">
+                        <h3 class="font-serif text-lg font-bold text-slate-800">Apartados Activos</h3>
+                        <p class="text-xs text-gray-500">A continuación, se listan los apartados configurados. Los apartados predeterminados están protegidos contra eliminación.</p>
+                        
+                        <div class="border border-gray-100 rounded-xl overflow-hidden bg-white shadow-sm" id="admin-categories-list">
+                            <!-- Se renderiza por JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 mt-20 border-t border-slate-850">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="font-serif text-white text-2xl mb-4 font-bold">Rancho San Juan</h3>
+                    <p class="text-sm text-slate-400">Un espacio virtual de confianza, diseñado para unificar, dinamizar y simplificar la convivencia dentro de nuestro exclusivo desarrollo campestre.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white text-sm uppercase tracking-widest mb-4">Apartados Oficiales</h4>
+                    <ul class="space-y-2 text-sm" id="footer-categories-links">
+                        <!-- Se renderizan dinámicamente -->
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white text-sm uppercase tracking-widest mb-4">Informe</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4 text-emerald-500"></i>rsj40239@gmail.com</li>
+                        <li class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4 text-emerald-500"></i> Oficinas: 56-5836-2644</li>
+                        <li class="flex items-center gap-2"><i data-lucide="shield-check" class="w-4 h-4 text-emerald-500"></i> 56-5836-2644</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-slate-800 text-center text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+                    <p>&copy; 2026 Condominio Residencial Rancho San Juan. Todos los derechos reservados.</p>
+                    <div class="flex items-center gap-2 bg-slate-850 px-3 py-1.5 rounded-full border border-slate-800 shadow-inner">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="text-[11px] font-semibold text-slate-300">Visitas al portal: <span id="visit-counter" class="text-white font-bold ml-1">0</span></span>
+                    </div>
+                </div>
+                <p class="font-serif italic text-slate-400 text-sm">Naturaleza, Seguridad y Bienestar.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- LIGHTBOX MODAL PARA MAPA EN PANTALLA COMPLETA -->
+    <div id="map-lightbox" class="fixed inset-0 z-50 hidden bg-black/95 flex flex-col justify-between p-4 md:p-8 opacity-0">
+        <div class="flex items-center justify-between text-white w-full max-w-7xl mx-auto mb-2">
+            <div>
+                <h3 class="font-serif text-2xl font-bold">Mapa de Distribución y Manzanas</h3>
+                <p class="text-xs text-gray-400">Rancho San Juan - Presione ESC para salir</p>
+            </div>
+            <button onclick="closeMapLightbox()" class="bg-white/10 hover:bg-white/20 text-white rounded-full p-2.5 transition-colors">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <div class="flex-grow flex items-center justify-center max-w-7xl w-full mx-auto my-4 overflow-auto rounded-xl">
+            <img 
+                src="mapa.png" 
+                id="lightbox-img" 
+                alt="Mapa Rancho San Juan Pantalla Completa" 
+                class="max-w-full max-h-[80vh] object-contain shadow-2xl rounded-lg"
+                onerror="this.src='https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=1600';"
+            >
+        </div>
+
+        <div class="text-center text-gray-500 text-xs py-2 w-full">
+            Haga scroll con el ratón o use dos dedos en móviles para ajustar el encuadre.
+        </div>
+    </div>
+
+    <!-- CONTROL LÓGICO DE LA PÁGINA (JAVASCRIPT) -->
+    <script>
+        // Contraseña por defecto para el Panel Publicador
+        const ADMIN_PASSWORD_HASH = "SanJuan2026";
+
+        // Estructura maestra de Categorías / Apartados del Portal (Se guardará dinámicamente)
+        const defaultCategories = [
+            { id: 'todos', label: 'Todos', icon: 'list', emoji: '', desc: 'Estás visualizando todos los acontecimientos del fraccionamiento. Navega por las pestañas superiores para enfocar la búsqueda en el apartado de tu interés inmediato.', isDefault: true },
+            { id: 'avisos', label: 'Avisos', icon: 'bell', emoji: '🔔', desc: 'Espacio regulado y exclusivo para circulares de la administración, acuerdos de asamblea, convocatorias oficiales y comunicados de seguridad para todos los colonos de Rancho San Juan.', isDefault: true, colorClass: 'bg-gradient-to-r from-red-50 to-rose-100/50 border-red-100', textTheme: 'red' },
+            { id: 'negocios', label: 'Negocios', icon: 'store', emoji: '💼', desc: 'Descubre los comercios, cafeterías, reposterías y productos artesanales gestionados dentro del condominio. Consulta horarios, menús, ubicaciones en manzana y apoya el consumo local.', isDefault: true, colorClass: 'bg-gradient-to-r from-emerald-50 to-green-100/50 border-emerald-100', textTheme: 'emerald' },
+            { id: 'servicio', label: 'Servicios', icon: 'wrench', emoji: '🛠️', desc: 'Directorio de especialistas técnicos verificados que operan dentro de Rancho San Juan: plomería, jardinería, electricidad, mantenimiento de albercas, y veterinaria a domicilio.', isDefault: true, colorClass: 'bg-gradient-to-r from-blue-50 to-indigo-100/50 border-blue-100', textTheme: 'blue' },
+            { id: 'venta varios', label: 'Venta Varios', icon: 'tag', emoji: '🏷️', desc: 'El mercado interno de Rancho San Juan. Compra y vende de forma segura entre vecinos: artículos deportivos, vehículos, muebles para el hogar, electrodomésticos y gadgets.', isDefault: true, colorClass: 'bg-gradient-to-r from-amber-50 to-yellow-100/50 border-amber-100', textTheme: 'amber' }
+        ];
+
+        // Obtener categorías desde localStorage o setear predeterminadas
+        let categories = JSON.parse(localStorage.getItem('rsj_categories'));
+        if (!categories) {
+            categories = defaultCategories;
+            localStorage.setItem('rsj_categories', JSON.stringify(categories));
+        }
+
+        // 1. BASE DE DATOS MOCK E INTEGRACIÓN LOCALSTORAGE DE POSTS
+        const defaultPosts = [
+            {
+                id: "post_1",
+                title: "Asamblea General de Colonos Ordinaria",
+                category: "avisos",
+                desc: "Se extiende una formal invitación a todos los colonos de Rancho San Juan para asistir a la reunión ordinaria este sábado en la Casa Club a las 11:00 AM. Se votarán los nuevos proyectos ecológicos y de seguridad vecinal.",
+                img: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=600",
+                ratings: [5, 5, 4, 5, 5],
+                date: "2026-06-01"
+            },
+            {
+                id: "post_2",
+                title: "Bistro Orgánico Rancho San Juan",
+                category: "negocios",
+                desc: "Alimentos 100% orgánicos cosechados en el huerto del condominio. Ofrecemos desayunos gourmet, café tostado de autor y pan de masa madre fresco todas las mañanas. Entrega sin costo de envío a su lote.",
+                img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=600",
+                ratings: [5, 5, 5],
+                date: "2026-05-30"
+            },
+            {
+                id: "post_3",
+                title: "Servicio Premium de Jardinería y Paisajismo",
+                category: "servicio",
+                desc: "Especialista en diseño y mantenimiento de jardines residenciales de Rancho San Juan. Podas estéticas, control ecológico de plagas, sistemas automáticos de riego inteligente y reforestación endémica.",
+                img: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=600",
+                ratings: [4, 5, 4, 4],
+                date: "2026-05-28"
+            },
+            {
+                id: "post_4",
+                title: "Bicicleta Eléctrica Specialized Turbo",
+                category: "venta varios",
+                desc: "Se vende bicicleta eléctrica de montaña Trek / Specialized, rodada 29, cuadro de aluminio ligero y batería de litio de larga duración. Perfecta para recorrer las veredas naturales del condominio.",
+                img: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&q=80&w=600",
+                ratings: [4, 3, 5],
+                date: "2026-05-25"
+            }
+        ];
+
+        // Obtener datos existentes o setear los predeterminados
+        let posts = JSON.parse(localStorage.getItem('rsj_posts'));
+        if (!posts) {
+            posts = defaultPosts;
+            localStorage.setItem('rsj_posts', JSON.stringify(posts));
+        }
+
+        let currentCategory = 'todos';
+        let base64Image = null; // Variable para almacenar foto de subida
+
+        // 2. REFERENCIAS DEL DOM
+        const postsFeed = document.getElementById('posts-feed');
+        const addPostForm = document.getElementById('add-post-form');
+        const addCategoryForm = document.getElementById('add-category-form');
+        const mapLightbox = document.getElementById('map-lightbox');
+        const sectionTitleText = document.getElementById('section-title-text');
+        const sectionSubtitleText = document.getElementById('section-subtitle-text');
+        const apartadoPresentacion = document.getElementById('apartado-presentacion');
+
+        // Referencias de administración
+        const adminLoginForm = document.getElementById('admin-login-form');
+        const adminPasswordInput = document.getElementById('admin-password');
+        const adminAuthContainer = document.getElementById('admin-auth-container');
+        const adminFormContainer = document.getElementById('admin-form-container');
+
+        // 3. CONTROL DE SESIÓN ADMINISTRADOR
+        function checkAdminSession() {
+            const isAuth = sessionStorage.getItem('rsj_admin_logged') === 'true';
+            if (isAuth) {
+                adminAuthContainer.classList.add('hidden');
+                adminFormContainer.classList.remove('hidden');
+                // Al estar logueado, actualizamos la lista de categorías y posts administrables
+                renderAdminCategoriesList();
+                renderAdminPostsList();
+            } else {
+                adminAuthContainer.classList.remove('hidden');
+                adminFormContainer.classList.add('hidden');
+            }
+        }
+
+        // Manejar el login de administrador
+        adminLoginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const passwordEntered = adminPasswordInput.value;
+
+            if (passwordEntered === ADMIN_PASSWORD_HASH) {
+                sessionStorage.setItem('rsj_admin_logged', 'true');
+                checkAdminSession();
+                showToast("🔐 Acceso Autorizado. Bienvenido al panel de administración.");
+                adminPasswordInput.value = '';
+                adminFormContainer.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                showToast("❌ Contraseña incorrecta. Inténtelo de nuevo.");
+                adminPasswordInput.value = '';
+                adminPasswordInput.classList.add('border-red-500', 'bg-red-50');
+                setTimeout(() => {
+                    adminPasswordInput.classList.remove('border-red-500', 'bg-red-50');
+                }, 1000);
+            }
+        });
+
+        // Cerrar sesión
+        function logoutAdmin() {
+            sessionStorage.removeItem('rsj_admin_logged');
+            checkAdminSession();
+            showToast("🔒 Sesión de administración cerrada.");
+        }
+
+        // Alternar entre pestañas en el panel administrador
+        function switchAdminTab(tab) {
+            const tabBtnPosts = document.getElementById('tab-btn-posts');
+            const tabBtnCategories = document.getElementById('tab-btn-categories');
+            const subPosts = document.getElementById('admin-sub-posts');
+            const subCategories = document.getElementById('admin-sub-categories');
+
+            if (tab === 'posts') {
+                tabBtnPosts.className = "pb-3 text-sm font-bold border-b-2 border-slate-900 text-slate-900 px-1 transition-all";
+                tabBtnCategories.className = "pb-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-slate-900 px-1 transition-all";
+                subPosts.classList.remove('hidden');
+                subCategories.classList.add('hidden');
+                renderAdminPostsList(); // Asegurar datos frescos
+            } else {
+                tabBtnCategories.className = "pb-3 text-sm font-bold border-b-2 border-slate-900 text-slate-900 px-1 transition-all";
+                tabBtnPosts.className = "pb-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-slate-900 px-1 transition-all";
+                subCategories.classList.remove('hidden');
+                subPosts.classList.add('hidden');
+                renderAdminCategoriesList(); // Asegurar datos frescos
+            }
+        }
+
+        // 4. RENDERIZACIÓN DINÁMICA DE APARTADOS (NAVBAR Y DROPDOWNS)
+        function renderNavbarFilters() {
+            const filterButtonsContainer = document.getElementById('filter-buttons');
+            filterButtonsContainer.innerHTML = '';
+
+            categories.forEach(cat => {
+                const isActive = currentCategory === cat.id;
+                const btn = document.createElement('button');
+                btn.className = `filter-btn px-4 py-2 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 ${isActive ? 'bg-terracotta text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100'}`;
+                btn.setAttribute('data-filter', cat.id);
+                btn.innerHTML = `${cat.emoji || ''} ${cat.label}`;
+                
+                btn.addEventListener('click', () => {
+                    setFilter(cat.id);
+                });
+                
+                filterButtonsContainer.appendChild(btn);
+            });
+        }
+
+        function renderCategoryDropdowns() {
+            const selectDropdown = document.getElementById('post-category');
+            selectDropdown.innerHTML = '';
+
+            // Solo mostrar categorías que no sean 'todos'
+            categories.filter(c => c.id !== 'todos').forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.id;
+                option.textContent = `${cat.emoji || ''} ${cat.label}`;
+                selectDropdown.appendChild(option);
+            });
+        }
+
+        function renderFooterLinks() {
+            const footerLinksContainer = document.getElementById('footer-categories-links');
+            footerLinksContainer.innerHTML = '';
+
+            categories.filter(c => c.id !== 'todos').forEach(cat => {
+                const li = document.createElement('li');
+                li.innerHTML = `<button onclick="setFilter('${cat.id}')" class="hover:text-white transition-colors text-left text-xs md:text-sm">${cat.emoji || '📌'} ${cat.label}</button>`;
+                footerLinksContainer.appendChild(li);
+            });
+        }
+
+        // 5. PRESENTACIÓN EXCLUSIVA DE APARTADOS (Dynamic Section Presenter)
+        function renderSectionPresentation() {
+            apartadoPresentacion.className = "mb-10 transition-all duration-300 transform scale-95 opacity-0";
+            
+            setTimeout(() => {
+                const catObj = categories.find(c => c.id === currentCategory) || categories[0];
+                let htmlContent = "";
+                
+                if (catObj.id === 'todos') {
+                    // Vista General
+                    htmlContent = `
+                        <div class="bg-slate-900 text-white rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-md relative overflow-hidden">
+                            <div class="absolute inset-0 bg-cover bg-center opacity-10 mix-blend-overlay" style="background-image: url('https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&q=80&w=1000')"></div>
+                            <div class="relative z-10 max-w-2xl">
+                                <span class="text-xs font-bold uppercase tracking-widest text-[#d4af37]">Bienestar Integrado</span>
+                                <h3 class="text-2xl font-bold mt-1 font-serif text-white">Cartelera Digital General</h3>
+                                <p class="text-sm text-slate-300 mt-2 leading-relaxed">
+                                    ${catObj.desc}
+                                </p>
+                            </div>
+                            <div class="relative z-10 flex flex-wrap gap-2 flex-shrink-0 max-w-sm">
+                                ${categories.filter(c => c.id !== 'todos').map(c => `
+                                    <span class="px-3.5 py-1.5 rounded-full bg-white/10 text-white text-xs font-semibold backdrop-blur-md">
+                                        ${c.emoji || ''} ${c.label}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // Vista de una categoría específica dinámica
+                    const themeColor = catObj.textTheme || 'slate';
+                    const iconName = catObj.icon || 'folder';
+                    
+                    htmlContent = `
+                        <div class="${catObj.colorClass || 'bg-gradient-to-r from-slate-50 to-gray-100/50 border-slate-100'} rounded-2xl border p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 shadow-sm transition-all duration-300">
+                            <div class="w-16 h-16 rounded-full bg-white text-slate-800 flex items-center justify-center flex-shrink-0 shadow-inner border border-slate-100">
+                                <img src="" onerror="this.style.display='none';"> <!-- Fallback visual para lucide -->
+                                <i data-lucide="${iconName}" class="w-8 h-8 text-${themeColor}-700"></i>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold uppercase tracking-widest text-${themeColor}-700">Canal Comunitario</span>
+                                <h3 class="text-2xl font-bold text-gray-900 mt-1 font-serif">${catObj.emoji || ''} Apartado de ${catObj.label}</h3>
+                                <p class="text-sm text-gray-600 mt-2 leading-relaxed">${catObj.desc}</p>
+                                <div class="mt-4 flex flex-wrap gap-4 text-xs font-semibold text-${themeColor}-800">
+                                    <span class="flex items-center gap-1"><i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Espacio Verificado</span>
+                                    <span class="flex items-center gap-1"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Actualización activa</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                apartadoPresentacion.innerHTML = htmlContent;
+                lucide.createIcons();
+                
+                // Efecto de entrada suave (Fade in + scale up)
+                apartadoPresentacion.classList.remove('scale-95', 'opacity-0');
+                apartadoPresentacion.classList.add('scale-100', 'opacity-100');
+            }, 150);
+        }
+
+        // 6. RENDERIZACIÓN DE TARJETAS DEL FEED
+        function renderFeed() {
+            postsFeed.innerHTML = '';
+            
+            // Filtrar anuncios por categoría
+            const filteredPosts = currentCategory === 'todos' 
+                ? posts 
+                : posts.filter(p => p.category === currentCategory);
+
+            if (filteredPosts.length === 0) {
+                postsFeed.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center py-16 text-center text-gray-400 bg-white rounded-xl border border-dashed border-gray-200">
+                        <i data-lucide="frown" class="w-12 h-12 text-gray-300 mb-3"></i>
+                        <h4 class="font-serif text-lg font-bold text-gray-700">Sin anuncios en esta categoría</h4>
+                        <p class="text-xs text-gray-500 mt-1">Sé el primero en publicar un anuncio en esta sección.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            filteredPosts.forEach(post => {
+                const sum = post.ratings.reduce((a, b) => a + b, 0);
+                const rawAvg = post.ratings.length > 0 ? (sum / post.ratings.length) : 0;
+                const avg = rawAvg.toFixed(1);
+
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full";
+                
+                // Obtener propiedades de la categoría de este post
+                const catInfo = categories.find(c => c.id === post.category) || { label: post.category, emoji: '📌', icon: 'tag', colorClass: 'bg-slate-50', textTheme: 'slate' };
+                const textThemeColor = catInfo.textTheme || 'slate';
+
+                card.innerHTML = `
+                    <div class="relative w-full h-[220px] bg-slate-100 overflow-hidden">
+                        <img 
+                            src="${post.img || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=600'}" 
+                            alt="${post.title}" 
+                            class="w-full h-full object-cover"
+                            onerror="this.src='https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=600';"
+                        >
+                        <span class="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-white/95 text-${textThemeColor}-800 border border-${textThemeColor}-100 shadow-md backdrop-blur-sm uppercase">
+                            <i data-lucide="${catInfo.icon || 'tag'}" class="w-3.5 h-3.5"></i> ${catInfo.emoji || ''} ${catInfo.label}
+                        </span>
+                    </div>
+
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex items-center justify-between text-xs text-gray-400 mb-3 font-semibold">
+                            <span>Publicado recientemente</span>
+                            <span>${post.date}</span>
+                        </div>
+                        <h3 class="font-serif text-xl font-bold text-gray-900 mb-2 leading-snug line-clamp-2">${post.title}</h3>
+                        <p class="text-sm text-gray-600 font-light mb-6 flex-grow line-clamp-4 leading-relaxed">${post.desc}</p>
+                        
+                        <div class="pt-4 border-t border-gray-100 mt-auto flex flex-col gap-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Promedio de Vecinos</span>
+                                <span class="inline-flex items-center gap-1 text-sm font-bold text-gray-800 bg-amber-50 text-amber-800 px-2.5 py-1 rounded-lg">
+                                    ★ ${avg > 0 ? avg : 'Sin votos'}
+                                </span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between gap-2 bg-slate-50/50 p-2.5 rounded-xl border border-slate-100">
+                                <span class="text-[11px] text-gray-500 font-medium">Califica este servicio:</span>
+                                <div class="flex flex-row-reverse items-center interactive-stars gap-0.5" data-id="${post.id}">
+                                    <span onclick="votePost('${post.id}', 5)" class="cursor-pointer text-xl text-gray-200 hover:text-amber-400 transition-colors text-slate-300">★</span>
+                                    <span onclick="votePost('${post.id}', 4)" class="cursor-pointer text-xl text-gray-200 hover:text-amber-400 transition-colors text-slate-300">★</span>
+                                    <span onclick="votePost('${post.id}', 3)" class="cursor-pointer text-xl text-gray-200 hover:text-amber-400 transition-colors text-slate-300">★</span>
+                                    <span onclick="votePost('${post.id}', 2)" class="cursor-pointer text-xl text-gray-200 hover:text-amber-400 transition-colors text-slate-300">★</span>
+                                    <span onclick="votePost('${post.id}', 1)" class="cursor-pointer text-xl text-gray-200 hover:text-amber-400 transition-colors text-slate-300">★</span>
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-center text-gray-400 italic">${post.ratings.length} evaluaciones en total</p>
+                        </div>
+                    </div>
+                `;
+                postsFeed.appendChild(card);
+                setupCardHoverRatingColors(card, post.id);
+            });
+
+            lucide.createIcons();
+        }
+
+        function setupCardHoverRatingColors(cardElement, postId) {
+            const stars = cardElement.querySelectorAll(`.interactive-stars[data-id="${postId}"] span`);
+            stars.forEach((star, index) => {
+                star.addEventListener('mouseover', () => {
+                    stars.forEach(s => s.classList.replace('text-gray-200', 'text-gray-200'));
+                    for(let i = index; i < 5; i++) {
+                        stars[i].classList.replace('text-gray-200', 'text-amber-400');
+                    }
+                });
+
+                star.addEventListener('mouseleave', () => {
+                    stars.forEach(s => s.classList.replace('text-amber-400', 'text-gray-200'));
+                });
+            });
+        }
+
+        // Votación Vecinal
+        function votePost(postId, rating) {
+            const index = posts.findIndex(p => p.id === postId);
+            if (index !== -1) {
+                posts[index].ratings.push(rating);
+                localStorage.setItem('rsj_posts', JSON.stringify(posts));
+                showToast(`¡Calificado con ${rating} estrellas! Gracias por tu voto.`);
+                renderFeed();
+                renderSectionPresentation();
+            }
+        }
+
+        // 7. MANEJO DE SELECCIÓN DE FILTROS EN BARRA DE NAVEGACIÓN
+        function setFilter(categoryValue) {
+            currentCategory = categoryValue;
+            
+            // Actualizar botones activos
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                if (btn.getAttribute('data-filter') === categoryValue) {
+                    btn.classList.add('bg-terracotta', 'text-white', 'shadow-sm');
+                    btn.classList.remove('text-gray-600', 'hover:bg-gray-100');
+                } else {
+                    btn.classList.remove('bg-terracotta', 'text-white', 'shadow-sm');
+                    btn.classList.add('text-gray-600', 'hover:bg-gray-100');
+                }
+            });
+
+            // Encontrar información del apartado
+            const catObj = categories.find(c => c.id === categoryValue) || categories[0];
+
+            // Actualizar títulos del feed
+            if (currentCategory === 'todos') {
+                sectionTitleText.innerText = "Publicaciones de la Comunidad";
+                sectionSubtitleText.innerText = "Mostrando todos los anuncios recientes de Rancho San Juan.";
+            } else {
+                sectionTitleText.innerText = `Sección de ${catObj.label}`;
+                sectionSubtitleText.innerText = `Anuncios del apartado oficial de "${catObj.label}".`;
+            }
+
+            // Renderizar la información del apartado destacado
+            renderSectionPresentation();
+            // Renderizar el feed correspondiente
+            renderFeed();
+            
+            // Desplazarse suavemente a la presentación del apartado
+            document.getElementById('apartado-presentacion').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // 8. REGISTRO Y AUDITORÍA DE APARTADOS (ADMINISTRACIÓN)
+        addCategoryForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const label = document.getElementById('cat-label').value.trim();
+            const emoji = document.getElementById('cat-emoji').value.trim();
+            const rawIcon = document.getElementById('cat-icon').value.trim();
+            const theme = document.getElementById('cat-theme').value;
+            const desc = document.getElementById('cat-desc').value.trim();
+
+            const icon = rawIcon !== '' ? rawIcon : 'folder';
+            const id = label.toLowerCase().replace(/[^a-z0-9]/g, '_');
+
+            // Verificar si el ID ya existe
+            if (categories.some(c => c.id === id)) {
+                showToast("❌ Ya existe un apartado con este nombre o un ID idéntico.");
+                return;
+            }
+
+            // Mapeo estético de clases de temas de color Tailwind
+            const themeClasses = {
+                red: { color: 'bg-gradient-to-r from-red-50 to-rose-100/50 border-red-100', textTheme: 'red' },
+                emerald: { color: 'bg-gradient-to-r from-emerald-50 to-green-100/50 border-emerald-100', textTheme: 'emerald' },
+                blue: { color: 'bg-gradient-to-r from-blue-50 to-indigo-100/50 border-blue-100', textTheme: 'blue' },
+                amber: { color: 'bg-gradient-to-r from-amber-50 to-yellow-100/50 border-amber-100', textTheme: 'amber' },
+                purple: { color: 'bg-gradient-to-r from-purple-50 to-fuchsia-100/50 border-purple-100', textTheme: 'purple' },
+                teal: { color: 'bg-gradient-to-r from-teal-50 to-cyan-100/50 border-teal-100', textTheme: 'teal' }
+            };
+
+            const selectedTheme = themeClasses[theme] || themeClasses.blue;
+
+            const newCategory = {
+                id: id,
+                label: label,
+                icon: icon,
+                emoji: emoji,
+                desc: desc,
+                colorClass: selectedTheme.color,
+                textTheme: selectedTheme.textTheme,
+                isDefault: false
+            };
+
+            categories.push(newCategory);
+            localStorage.setItem('rsj_categories', JSON.stringify(categories));
+
+            addCategoryForm.reset();
+            showToast(`✨ Apartado "${label}" creado con éxito.`);
+            
+            // Recargar interfaces dinámicas
+            refreshCategoriesUI();
+        });
+
+        // Eliminar apartado creado por el usuario
+        function deleteCategory(id) {
+            const index = categories.findIndex(c => c.id === id);
+            if (index === -1) return;
+
+            if (categories[index].isDefault) {
+                showToast("❌ No se pueden eliminar apartados predeterminados del fraccionamiento.");
+                return;
+            }
+
+            const label = categories[index].label;
+
+            // Reasignar publicaciones de esta categoría a 'venta varios' o similar
+            posts.forEach(post => {
+                if (post.category === id) {
+                    post.category = 'venta varios';
+                }
+            });
+            localStorage.setItem('rsj_posts', JSON.stringify(posts));
+
+            // Eliminar de la lista
+            categories.splice(index, 1);
+            localStorage.setItem('rsj_categories', JSON.stringify(categories));
+
+            showToast(`🗑️ El apartado "${label}" ha sido eliminado.`);
+            
+            // Si el filtro actual era la categoría eliminada, volver a 'todos'
+            if (currentCategory === id) {
+                currentCategory = 'todos';
+            }
+
+            refreshCategoriesUI();
+        }
+
+        // Renderizar lista de categorías en panel de administrador
+        function renderAdminCategoriesList() {
+            const listContainer = document.getElementById('admin-categories-list');
+            listContainer.innerHTML = '';
+
+            categories.forEach(cat => {
+                const item = document.createElement('div');
+                item.className = "flex items-center justify-between p-4 border-b border-gray-100 last:border-b-0 hover:bg-slate-50 transition-colors";
+                
+                const isProtected = cat.isDefault;
+
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-slate-700 shadow-sm">
+                            <i data-lucide="${cat.icon || 'folder'}" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                                ${cat.emoji || ''} ${cat.label}
+                                ${isProtected ? '<span class="text-[10px] bg-slate-100 text-slate-500 font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider">Protegido</span>' : ''}
+                            </h4>
+                            <p class="text-[11px] text-gray-500 max-w-lg truncate mt-0.5">${cat.desc}</p>
+                        </div>
+                    </div>
+                    ${!isProtected ? `
+                        <button onclick="deleteCategory('${cat.id}')" class="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-lg transition-all" title="Eliminar Apartado">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    ` : '<div class="w-8"></div>'}
+                `;
+                listContainer.appendChild(item);
+            });
+
+            lucide.createIcons();
+        }
+
+        // 9. AUDITORÍA Y ELIMINACIÓN DE PUBLICACIONES (ANUNCIOS)
+        function renderAdminPostsList() {
+            const adminPostsList = document.getElementById('admin-posts-list');
+            if (!adminPostsList) return;
+
+            adminPostsList.innerHTML = '';
+
+            if (posts.length === 0) {
+                adminPostsList.innerHTML = `
+                    <div class="p-8 text-center text-gray-400 text-xs">
+                        No hay anuncios activos publicados en este momento.
+                    </div>
+                `;
+                return;
+            }
+
+            posts.forEach(post => {
+                const catObj = categories.find(c => c.id === post.category) || { label: post.category, emoji: '📌' };
+                const item = document.createElement('div');
+                item.className = "flex items-center justify-between p-4 border-b border-gray-100 last:border-b-0 hover:bg-slate-50 transition-colors";
+
+                item.innerHTML = `
+                    <div class="flex items-center gap-3 overflow-hidden mr-4">
+                        <img 
+                            src="${post.img || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=100'}" 
+                            class="w-12 h-12 rounded object-cover flex-shrink-0 border border-slate-100"
+                            onerror="this.src='https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=100';"
+                        >
+                        <div class="truncate">
+                            <h4 class="font-bold text-slate-800 text-sm truncate">${post.title}</h4>
+                            <div class="flex items-center gap-2 text-[10px] text-gray-500 mt-1">
+                                <span class="bg-slate-100 px-2 py-0.5 rounded-full font-medium">${catObj.emoji || ''} ${catObj.label}</span>
+                                <span>• ${post.date}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="deletePost('${post.id}')" class="text-red-500 hover:text-red-700 p-2.5 hover:bg-red-50 rounded-lg transition-all flex-shrink-0" title="Eliminar Publicación">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                `;
+                adminPostsList.appendChild(item);
+            });
+
+            lucide.createIcons();
+        }
+
+        // Eliminar publicación de la base de datos
+        function deletePost(id) {
+            const index = posts.findIndex(p => p.id === id);
+            if (index === -1) return;
+
+            const title = posts[index].title;
+            posts.splice(index, 1);
+            localStorage.setItem('rsj_posts', JSON.stringify(posts));
+
+            showToast(`🗑️ El anuncio "${title}" ha sido removido.`);
+            
+            // Recargar interfaces dinámicas
+            renderFeed();
+            renderAdminPostsList();
+        }
+
+        function refreshCategoriesUI() {
+            renderNavbarFilters();
+            renderCategoryDropdowns();
+            renderFooterLinks();
+            renderAdminCategoriesList();
+            renderSectionPresentation();
+            renderFeed();
+        }
+
+        // 10. SUBIDA E IMAGEN DE PUBLICACIÓN (Manejo con Base64)
+        function previewImage(event) {
+            const input = event.target;
+            const fileLabelText = document.getElementById('file-label-text');
+            const previewContainer = document.getElementById('image-preview-container');
+            const preview = document.getElementById('image-preview');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    base64Image = e.target.result;
+                    preview.src = base64Image;
+                    previewContainer.classList.remove('hidden');
+                    fileLabelText.textContent = `Archivo seleccionado: ${input.files[0].name}`;
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function cancelImage() {
+            document.getElementById('post-image').value = '';
+            document.getElementById('image-preview-container').classList.add('hidden');
+            document.getElementById('file-label-text').textContent = "Haz clic para subir foto del producto/servicio";
+            base64Image = null;
+        }
+
+        // 11. ENVÍO DEL FORMULARIO DE PUBLICACIÓN (SÓLO ADMINISTRACIÓN)
+        addPostForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const title = document.getElementById('post-title').value.trim();
+            const category = document.getElementById('post-category').value;
+            const desc = document.getElementById('post-desc').value.trim();
+            
+            const now = new Date();
+            const dateStr = now.toISOString().split('T')[0];
+
+            const newPost = {
+                id: 'post_' + Date.now(),
+                title: title,
+                category: category,
+                desc: desc,
+                img: base64Image,
+                ratings: [],
+                date: dateStr
+            };
+
+            posts.unshift(newPost);
+            localStorage.setItem('rsj_posts', JSON.stringify(posts));
+
+            addPostForm.reset();
+            cancelImage();
+
+            showToast("✨ ¡Anuncio publicado correctamente con tus vecinos!");
+            setFilter(category); // Te lleva directamente al apartado seleccionado
+            
+            // Recargar listas administrativas de publicaciones
+            renderAdminPostsList();
+        });
+
+        // 12. ACCIONES DEL LIGHTBOX DEL MAPA
+        function openMapLightbox() {
+            mapLightbox.classList.remove('hidden');
+            setTimeout(() => {
+                mapLightbox.classList.remove('opacity-0');
+                mapLightbox.classList.add('opacity-100');
+            }, 50);
+        }
+
+        // Cerrar mapa
+        function closeMapLightbox() {
+            mapLightbox.classList.remove('opacity-100');
+            mapLightbox.classList.add('opacity-0');
+            setTimeout(() => {
+                mapLightbox.classList.add('hidden');
+            }, 300);
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === "Escape" && !mapLightbox.classList.contains('hidden')) {
+                closeMapLightbox();
+            }
+        });
+
+        // 13. BANNER TOAST PERSONALIZADO
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = "fixed bottom-5 right-5 z-50 bg-slate-900 text-white text-xs md:text-sm px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 transform translate-y-10 opacity-0 transition-all duration-300 border border-slate-850";
+            toast.innerHTML = `
+                <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 animate-pulse"></i>
+                <span class="font-medium">${message}</span>
+            `;
+            document.body.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+            }, 50);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        function initializeVisitorCounter() {
+            let visitCount = localStorage.getItem('rsj_portal_visits');
+            if (!visitCount) {
+                visitCount = 3842; // Base de simulación
+            } else {
+                visitCount = parseInt(visitCount);
+            }
+            visitCount += 1;
+            localStorage.setItem('rsj_portal_visits', visitCount);
+            
+            const counterLabel = document.getElementById('visit-counter');
+            if (counterLabel) {
+                counterLabel.textContent = visitCount.toLocaleString('es-MX');
+            }
+        }
+
+        // Ejecuciones Iniciales de Carga de Vista
+        initializeVisitorCounter(); // Iniciar contador de visitas
+        refreshCategoriesUI();      // Cargar UI dinámica (Navbar, Dropdowns, Footer)
+        checkAdminSession();         // Comprobar si el administrador está autenticado
+    </script>
+</body>
+</html>
